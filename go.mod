@@ -3,7 +3,7 @@ module github.com/koykov/dyntpl_i18n
 go 1.18
 
 require (
-	github.com/koykov/dyntpl v1.1.7-0.20231220214055-1547281d41b6
+	github.com/koykov/dyntpl v1.1.7-0.20231222204800-0ea6ca8d5fd6
 	github.com/koykov/fastconv v1.0.2
 	github.com/koykov/i18n v1.0.3
 )
