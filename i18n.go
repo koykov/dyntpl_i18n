@@ -12,6 +12,7 @@ const (
 	DatabaseKey            = "__i18n_db__"
 	PlaceholderReplacerKey = "__i18n_pr__"
 	LocaleKey              = "i18n.locale"
+	DirectionKey           = "i18n.direction"
 )
 
 var (
