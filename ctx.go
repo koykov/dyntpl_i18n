@@ -1,10 +1,14 @@
 package dyntpl_i18n
 
-import "github.com/koykov/dyntpl"
+import (
+	"github.com/koykov/dyntpl"
+	"github.com/koykov/i18n"
+)
 
 // AcquireCtx takes ctx from default pool and wraps it with locale/direction vars.
-func AcquireCtx(locale, direction string) *dyntpl.Ctx {
+func AcquireCtx(locale, direction string, db *i18n.DB) *dyntpl.Ctx {
 	ctx := dyntpl.AcquireCtx()
+	ctx.SetLocal(DatabaseKey, db)
 	if len(locale) > 0 {
 		ctx.SetLocal(LocaleKey, locale)
 	}

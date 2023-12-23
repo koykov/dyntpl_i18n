@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	DatabaseKey            = "__i18n_db__"
-	PlaceholderReplacerKey = "__i18n_pr__"
+	DatabaseKey            = "i18n.database"
+	PlaceholderReplacerKey = "i18n.placeholder"
 	LocaleKey              = "i18n.locale"
 	DirectionKey           = "i18n.direction"
 )
@@ -32,6 +32,10 @@ func modTranslatePlural(ctx *dyntpl.Ctx, buf *any, _ any, args []any) error {
 
 // Generic translate function.
 func trans(ctx *dyntpl.Ctx, buf *any, args []any, plural bool) error {
+	if len(args) == 0 {
+		return dyntpl.ErrModNoArgs
+	}
+
 	var (
 		raw any
 		db  *i18n.DB
@@ -47,18 +51,11 @@ func trans(ctx *dyntpl.Ctx, buf *any, args []any, plural bool) error {
 		return nil
 	}
 
-	if raw, ok = getVar(ctx, PlaceholderReplacerKey); !ok {
-		return nil
-	}
-	if pr, ok = raw.(*i18n.PlaceholderReplacer); !ok {
-		return nil
+	if raw, ok = getVar(ctx, PlaceholderReplacerKey); ok {
+		pr, _ = raw.(*i18n.PlaceholderReplacer)
 	}
 	if pr == nil {
 		pr = &defaultPR
-	}
-
-	if len(args) == 0 {
-		return dyntpl.ErrModNoArgs
 	}
 
 	var (
@@ -121,6 +118,14 @@ func trans(ctx *dyntpl.Ctx, buf *any, args []any, plural bool) error {
 	}
 	ctx.BufModStrOut(buf, t)
 
+	return nil
+}
+
+func modSetLocale(ctx *dyntpl.Ctx, _ *any, _ any, args []any) error {
+	if len(args) == 0 {
+		return dyntpl.ErrModNoArgs
+	}
+	ctx.SetLocal(LocaleKey, args[0])
 	return nil
 }
 
