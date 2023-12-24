@@ -105,10 +105,20 @@ func trans(ctx *dyntpl.Ctx, buf *any, args []any, plural bool) error {
 	if raw, ok = getVar(ctx, LocaleKey); !ok {
 		return nil
 	}
-	if loc, ok = raw.(string); !ok || len(loc) == 0 {
+	switch x := raw.(type) {
+	case string:
+		loc = x
+	case *string:
+		loc = *x
+	case []byte:
+		loc = fastconv.B2S(x)
+	case *[]byte:
+		loc = fastconv.B2S(*x)
+	}
+	if len(loc) == 0 {
 		return nil
 	}
-	lkey := ctx.BufAcc.StakeOut().WriteStr(loc).WriteByte('.').WriteStr(key).StakedString()
+	lkey := ctx.BufAcc.StakeOut().WriteString(loc).WriteByte('.').WriteString(key).StakedString()
 
 	// Get translation from DB.
 	if plural {

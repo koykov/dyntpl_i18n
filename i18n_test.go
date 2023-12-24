@@ -11,10 +11,10 @@ import (
 
 func TestI18n(t *testing.T) {
 	i18nDB, _ := i18n.New(fnv.Hasher{})
-	i18nDB.Set("en.messages.welcome", "Welcome, !user!")
-	i18nDB.Set("ru.messages.welcome", "Привет, !user!")
-	i18nDB.Set("en.pc.cpu", "no|yes")
-	i18nDB.Set("en.me.age", "{0} you just born|[1,10] you're a child|[10,18] you're teenager|[18,40] you're adult|[40,80] you're old|[80,*] you're dead")
+	_ = i18nDB.Set("en.messages.welcome", "Welcome, !user!")
+	_ = i18nDB.Set("ru.messages.welcome", "Привет, !user!")
+	_ = i18nDB.Set("en.pc.cpu", "no|yes")
+	_ = i18nDB.Set("en.me.age", "{0} you just born|[1,10] you're a child|[10,18] you're teenager|[18,40] you're adult|[40,80] you're old|[80,*] you're dead")
 
 	t.Run("i18n", func(t *testing.T) { testI18n(t, i18nDB) })
 	t.Run("i18nPlural", func(t *testing.T) { testI18n(t, i18nDB) })
