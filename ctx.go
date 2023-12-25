@@ -8,12 +8,12 @@ import (
 // AcquireCtx takes ctx from default pool and wraps it with locale/direction vars.
 func AcquireCtx(locale, direction string, db *i18n.DB) *dyntpl.Ctx {
 	ctx := dyntpl.AcquireCtx()
-	ctx.SetLocal(DatabaseKey, db)
+	ctx.SetStatic(DatabaseKey, db)
 	if len(locale) > 0 {
-		ctx.SetLocal(LocaleKey, locale)
+		ctx.SetString(LocaleKey, locale)
 	}
 	if len(direction) > 0 {
-		ctx.SetLocal(DirectionKey, direction)
+		ctx.SetString(DirectionKey, direction)
 	}
 	return ctx
 }

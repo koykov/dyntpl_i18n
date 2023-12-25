@@ -31,6 +31,7 @@ func testI18n(t *testing.T, db *i18n.DB) {
 	}
 
 	ctx := AcquireCtx("en", "", db)
+	defer ReleaseCtx(ctx)
 	ctx.Set("user", user, &ins)
 	ctx.SetStatic("cores", 4)
 	ctx.SetStatic("years", 90)

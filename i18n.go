@@ -2,6 +2,7 @@ package dyntpl_i18n
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/koykov/dyntpl"
 	"github.com/koykov/fastconv"
@@ -9,10 +10,10 @@ import (
 )
 
 const (
-	DatabaseKey            = "i18n.database"
-	PlaceholderReplacerKey = "i18n.placeholder"
-	LocaleKey              = "i18n.locale"
-	DirectionKey           = "i18n.direction"
+	DatabaseKey            = "i18n__database"
+	PlaceholderReplacerKey = "i18n__placeholder"
+	LocaleKey              = "i18n__locale"
+	DirectionKey           = "i18n__direction"
 )
 
 var (
@@ -56,6 +57,25 @@ func trans(ctx *dyntpl.Ctx, buf *any, args []any, plural bool) error {
 	}
 	if pr == nil {
 		pr = &defaultPR
+	}
+
+	if raw, ok = getVar(ctx, LocaleKey); !ok {
+		return nil
+	}
+	switch x := raw.(type) {
+	case string:
+		loc = x
+	case *string:
+		loc = *x
+	case []byte:
+		loc = fastconv.B2S(x)
+	case *[]byte:
+		loc = fastconv.B2S(*x)
+	case fmt.Stringer:
+		loc = x.String()
+	}
+	if len(loc) == 0 {
+		return nil
 	}
 
 	var (
@@ -102,22 +122,6 @@ func trans(ctx *dyntpl.Ctx, buf *any, args []any, plural bool) error {
 	if len(key) == 0 {
 		return nil
 	}
-	if raw, ok = getVar(ctx, LocaleKey); !ok {
-		return nil
-	}
-	switch x := raw.(type) {
-	case string:
-		loc = x
-	case *string:
-		loc = *x
-	case []byte:
-		loc = fastconv.B2S(x)
-	case *[]byte:
-		loc = fastconv.B2S(*x)
-	}
-	if len(loc) == 0 {
-		return nil
-	}
 	lkey := ctx.BufAcc.StakeOut().WriteString(loc).WriteByte('.').WriteString(key).StakedString()
 
 	// Get translation from DB.
@@ -135,12 +139,12 @@ func modSetLocale(ctx *dyntpl.Ctx, _ *any, _ any, args []any) error {
 	if len(args) == 0 {
 		return dyntpl.ErrModNoArgs
 	}
-	ctx.SetLocal(LocaleKey, args[0])
+	ctx.SetStatic(LocaleKey, args[0])
 	return nil
 }
 
 func getVar(ctx *dyntpl.Ctx, name string) (any, bool) {
-	v := ctx.GetLocal(name)
+	v := ctx.Get(name)
 	if v != nil {
 		return v, true
 	}
