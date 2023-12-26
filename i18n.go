@@ -45,6 +45,7 @@ func trans(ctx *dyntpl.Ctx, buf *any, args []any, plural bool) error {
 		ok  bool
 	)
 
+	// Check available i18n database.
 	if raw, ok = getVar(ctx, DatabaseKey); !ok {
 		return nil
 	}
@@ -52,6 +53,7 @@ func trans(ctx *dyntpl.Ctx, buf *any, args []any, plural bool) error {
 		return nil
 	}
 
+	// Check available placeholder replacer.
 	if raw, ok = getVar(ctx, PlaceholderReplacerKey); ok {
 		pr, _ = raw.(*i18n.PlaceholderReplacer)
 	}
@@ -59,6 +61,7 @@ func trans(ctx *dyntpl.Ctx, buf *any, args []any, plural bool) error {
 		pr = &defaultPR
 	}
 
+	// Check locale.
 	if raw, ok = getVar(ctx, LocaleKey); !ok {
 		return nil
 	}
@@ -78,11 +81,11 @@ func trans(ctx *dyntpl.Ctx, buf *any, args []any, plural bool) error {
 		return nil
 	}
 
+	// Try to get the key.
 	var (
 		key, def, t string
 		count       = 1
 	)
-	// Try to get the key.
 	if raw, ok := args[0].(*[]byte); ok && len(*raw) > 0 {
 		key = fastconv.B2S(*raw)
 	} else if err := ctx.BufAcc.StakeOut().WriteX(args[0]).Error(); err == nil {
