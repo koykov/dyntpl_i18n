@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"fmt"
 
+	"github.com/koykov/byteconv"
 	"github.com/koykov/dyntpl"
-	"github.com/koykov/fastconv"
 	"github.com/koykov/i18n"
 )
 
@@ -71,9 +71,9 @@ func trans(ctx *dyntpl.Ctx, buf *any, args []any, plural bool) error {
 	case *string:
 		loc = *x
 	case []byte:
-		loc = fastconv.B2S(x)
+		loc = byteconv.B2S(x)
 	case *[]byte:
-		loc = fastconv.B2S(*x)
+		loc = byteconv.B2S(*x)
 	case fmt.Stringer:
 		loc = x.String()
 	}
@@ -87,7 +87,7 @@ func trans(ctx *dyntpl.Ctx, buf *any, args []any, plural bool) error {
 		count       = 1
 	)
 	if raw, ok := args[0].(*[]byte); ok && len(*raw) > 0 {
-		key = fastconv.B2S(*raw)
+		key = byteconv.B2S(*raw)
 	} else if err := ctx.BufAcc.StakeOut().WriteX(args[0]).Error(); err == nil {
 		key = ctx.BufAcc.StakedString()
 	}
@@ -95,7 +95,7 @@ func trans(ctx *dyntpl.Ctx, buf *any, args []any, plural bool) error {
 	// Try to get the default value.
 	if len(args) > 0 {
 		if raw, ok := args[0].(*[]byte); ok && len(*raw) > 0 && !bytes.Equal(*raw, defEmpty) {
-			def = fastconv.B2S(*raw)
+			def = byteconv.B2S(*raw)
 		}
 		args = args[1:]
 	}
@@ -116,7 +116,7 @@ func trans(ctx *dyntpl.Ctx, buf *any, args []any, plural bool) error {
 		for i := 0; i < len(args); i++ {
 			if kv, ok := args[i].(*dyntpl.KV); ok {
 				ctx.BufAcc.StakeOut().WriteX(kv.V)
-				pr.AddKV(fastconv.B2S(kv.K), ctx.BufAcc.StakedString())
+				pr.AddKV(byteconv.B2S(kv.K), ctx.BufAcc.StakedString())
 			}
 		}
 	}
