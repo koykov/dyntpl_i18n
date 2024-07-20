@@ -4,13 +4,13 @@ import "github.com/koykov/dyntpl"
 
 func init() {
 	dyntpl.RegisterModFnNS("i18n", "translate", "t", modTranslate).
-		WithParam("key string", "Machine-redable key in i18n database.").
+		WithParam("key string", "Machine-readable key in i18n database.").
 		WithParam("default string", "Default value if key not found in database.").
 		WithParam("placeholders object", "Associative array with placeholders.").
 		WithDescription("Translate key to current locale.").
 		WithExample(`{%= i18n::t("key", "default value", {"!placeholder0": "replacement", "!placeholder1": object.Label, ...}) %}`)
 	dyntpl.RegisterModFnNS("i18n", "translatePlural", "tp", modTranslatePlural).
-		WithParam("key string", "Machine-redable key in i18n database.").
+		WithParam("key string", "Machine-readable key in i18n database.").
 		WithParam("default string", "Default value if key not found in database.").
 		WithParam("count int", "Value to choose correct plural form.").
 		WithParam("placeholders object", "Associative array with placeholders.").
